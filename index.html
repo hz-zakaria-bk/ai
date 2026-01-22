@@ -71,20 +71,20 @@
   .home-btn {
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
+    color: darkslateblue;
     padding: 10px 20px;
     border-radius: 10px;
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
     transition: all 0.3s;
-    display: flex;
+    display: noneS;
     align-items: center;
     gap: 8px;
   }
 
   .home-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: gray;
     transform: translateY(-1px);
   }
 
@@ -295,23 +295,23 @@
     .message {
       max-width: 90%;
     }
-  }
-</style>
-</head>
-<body>
-  <div class="container">
+
+
+
+
+    /*<div class="container">
     <!-- Header -->
     <div class="header">
       <div class="header-content">
         <div class="logo">HZ</div>
         <div class="title">بوت HZ الذكي 🤖</div>
       </div>
-      <a href="https://hzcompany.pages.dev/" class="home-btn">
+      <a href="index.html" class="home-btn">
         <span>🏠</span>
-     اضغط ل ذهاب ل موقع رسمي
+        الرئيسية
       </a>
     </div>
-
+    
     <!-- Chat Area -->
     <div class="chat-container" id="chat">
       <!-- Welcome Message -->
@@ -323,7 +323,7 @@
           <p>كيف يمكنني مساعدتك اليوم؟</p>
         </div>
       </div>
-      
+          <!-- Chat Area -->
       <!-- Messages will appear here -->
     </div>
 
@@ -344,85 +344,114 @@
     </div>
   </div>
 
-  <script>
-    const chat = document.getElementById("chat");
+ <script>
+  const chat = document.getElementById("chat");
+  const WORKER_URL = "https://hz.hzcompanybusiness.workers.dev";
 
-    function botSay(text){
-      const messageDiv = document.createElement("div");
-      messageDiv.className = "message bot-message";
-      messageDiv.innerHTML = `🤖 ${text}`;
-      chat.appendChild(messageDiv);
-      chat.scrollTop = chat.scrollHeight;
+  function botSay(text) {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = "message bot-message";
+    messageDiv.textContent = "🤖 " + text;
+    chat.appendChild(messageDiv);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  async function ask() {
+    const input = document.getElementById("messageInput");
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    // User message
+    const userDiv = document.createElement("div");
+    userDiv.className = "message user-message";
+    userDiv.textContent = "👤 " + msg;
+    chat.appendChild(userDiv);
+
+    input.value = "";
+    chat.scrollTop = chat.scrollHeight;
+
+    // Remove welcome message
+    const welcome = document.querySelector(".welcome-message");
+    if (welcome) welcome.remove();
+
+    // Thinking message
+    const thinking = document.createElement("div");
+    thinking.className = "message bot-message";
+    thinking.textContent = "🤖 ⏳ جاري التفكير...";
+    chat.appendChild(thinking);
+    chat.scrollTop = chat.scrollHeight;
+
+    try {
+      const res = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: msg
+        })
+      });
+
+      const data = await res.json();
+      thinking.remove();
+
+      botSay(data.reply || "ما فهمت سؤالك 🙂");
+
+    } catch (error) {
+      thinking.remove();
+      botSay("❌ حصل خطأ في الاتصال بالخادم");
+      console.error(error);
     }
+  }
 
-    async function ask(){
-      const input = document.getElementById("messageInput");
-      const msg = input.value.trim();
-      if (!msg) return;
+  // Enter key support
+  document.getElementById("messageInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") ask();
+  });
 
-      // Add user message
-      const userMessageDiv = document.createElement("div");
-      userMessageDiv.className = "message user-message";
-      userMessageDiv.innerHTML = `👤 ${msg}`;
-      chat.appendChild(userMessageDiv);
-      
-      input.value = "";
-      chat.scrollTop = chat.scrollHeight;
+  // Auto focus
+  window.onload = () => {
+    document.getElementById("messageInput").focus();
+  };
+</script> */
 
-      // Remove welcome message after first user message
-      const welcomeMessage = document.querySelector('.welcome-message');
-      if (welcomeMessage) {
-        welcomeMessage.style.display = 'none';
-      }
 
-      // Show thinking message
-      const thinkingDiv = document.createElement("div");
-      thinkingDiv.className = "message bot-message";
-      thinkingDiv.innerHTML = "🤖 ⏳ جاري التفكير...";
-      chat.appendChild(thinkingDiv);
-      chat.scrollTop = chat.scrollHeight;
 
-      try {
-        const res = await fetch("https://hz.hzcompanybusiness.workers.dev", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            message: msg
-          })
-        });
 
-        const data = await res.json();
+
+
+
+
+
+
+
+
+  }
+</style>
+</head>
+<body>
+
+
+   <!-- Chat Area -->
+    <div class="chat-container" id="chat">
+      <!-- Welcome Message -->
+      <div class="welcome-message">
+        <div class="welcome-icon">🤖</div>
+        <div class="welcome-text">
+          <h1>عذرًا</h1>
+          <br>
+          <p>عذرًا، نظام الذكاء الاصطناعي قيد الصيانة حاليًا
+نحن نعمل على تحسين الأداء وتقديم تجربة أفضل. يرجى المحاولة لاحقًا.</p>
+<br>
+<br>
+<a href="index.html" class="home-btn">الرئيسية</a>
         
-        // Remove thinking message
-        thinkingDiv.remove();
-        
-        // Add bot response
-        botSay(data.reply || "عذراً، لم أتمكن من فهم سؤالك. يمكنك إعادة صياغته أو طرح سؤال آخر.");
+      </a>
+        </div>
+      </div>
+          <!-- Chat Area -->
+      <!-- Messages will appear here -->
+    </div>
 
-      } catch (err) {
-        console.error(err);
-        
-        // Remove thinking message
-        thinkingDiv.remove();
-        
-        // Show error message
-        botSay("❌ حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.");
-      }
-    }
-
-    // Allow Enter key to send message
-    document.getElementById("messageInput").addEventListener("keypress", function(event) {
-      if (event.key === "Enter") {
-        ask();
-      }
-    });
-
-    // Focus input on load
-    window.addEventListener("load", function() {
-      document.getElementById("messageInput").focus();
-    });
-  </script>
 </body>
 </html>
